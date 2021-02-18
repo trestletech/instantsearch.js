@@ -55,6 +55,7 @@
     "@types/googlemaps": "^3.39.6",
     "algoliasearch-helper": "^3.3.4",
     "classnames": "^2.2.5",
+    "esjest-transform": "0.0.2",
     "events": "^1.1.0",
     "hogan.js": "^3.0.2",
     "preact": "^10.0.0",
