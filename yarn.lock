@@ -6730,10 +6730,10 @@ escodegen@^1.11.1, escodegen@^1.9.1:
   optionalDependencies:
     source-map "~0.6.1"
 
-esjest-transform@0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/esjest-transform/-/esjest-transform-0.0.2.tgz#502b7d600141824d7a3ed2192d5c593271a8e5cc"
-  integrity sha512-zVUnzeT5l9NW3CkOI8PxLWAyZ8bi0lTx1wVEmyWv5uJMmojW9e85PuiVwDqKqXSxDlN/lJInEwgljO52+gBteg==
+esjest-transform@0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/esjest-transform/-/esjest-transform-0.0.3.tgz#039277d9b5920c1da1b6f1ba71a3ada4bc9b0f6d"
+  integrity sha512-KlLX8BiBmy/wFnolgKkINyDcNf8K8vIVnkfwHY22QJZBfIUB4J02zaeF8LTILf1xFJDD6BxoQpCN/ROu/Cd/Uw==
   dependencies:
     "@babel/core" "^7.12.16"
     "@babel/plugin-transform-modules-commonjs" "^7.12.13"
