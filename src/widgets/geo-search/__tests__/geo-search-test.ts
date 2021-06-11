@@ -137,7 +137,7 @@ describe('GeoSearch', () => {
 
   beforeEach(() => {
     render.mockClear();
-    renderer.mockClear();
+    castToJestMock(renderer).mockClear();
   });
 
   describe('Usage', () => {

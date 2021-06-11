@@ -1,17 +1,28 @@
+/* global google */
 /** @jsx h */
 
 import { h, render } from 'preact';
 import { prepareTemplateProps } from '../../lib/utils';
 import GeoSearchControls from '../../components/GeoSearchControls/GeoSearchControls';
+import defaultTemplates from './defaultTemplates';
+import {
+  GeoSearchConnectorParams,
+  GeoSearchRenderState,
+} from '../../connectors/geo-search/connectGeoSearch';
+import { RendererOptions } from '../../types';
+import { GeoSearchWidgetParams } from './geo-search';
 
-const refineWithMap = ({ refine, mapInstance }) =>
+const refineWithMap = (
+  refine: GeoSearchRenderState['refine'],
+  mapInstance: google.maps.Map
+) =>
   refine({
     northEast: mapInstance
-      .getBounds()
+      .getBounds()!
       .getNorthEast()
       .toJSON(),
     southWest: mapInstance
-      .getBounds()
+      .getBounds()!
       .getSouthWest()
       .toJSON(),
   });
@@ -46,7 +57,12 @@ const lockUserInteraction = (renderState, functionThatAltersTheMapPosition) => {
   renderState.isUserInteraction = true;
 };
 
-const renderer = (
+const renderer = ({
+  container,
+  createMarker,
+  markerOptions,
+  cssClasses,
+}) => (
   {
     items,
     position,
@@ -60,13 +76,14 @@ const renderer = (
     isRefinedWithMap,
     widgetParams,
     instantSearchInstance,
-  },
-  isFirstRendering
+  }: GeoSearchRenderState &
+    RendererOptions<
+      GeoSearchConnectorParams & Omit<GeoSearchWidgetParams, 'container'>
+    >,
+  isFirstRendering: boolean
 ) => {
   const {
-    container,
     googleReference,
-    cssClasses,
     templates,
     initialZoom,
     initialPosition,
@@ -74,8 +91,6 @@ const renderer = (
     enableClearMapRefinement,
     enableRefineControl,
     mapOptions,
-    createMarker,
-    markerOptions,
     renderState,
   } = widgetParams;
 
@@ -126,10 +141,7 @@ const renderer = (
         if (renderState.isUserInteraction && renderState.isPendingRefine) {
           renderState.isPendingRefine = false;
 
-          refineWithMap({
-            mapInstance: renderState.mapInstance,
-            refine,
-          });
+          refineWithMap(refine, renderState.mapInstance);
         }
       });
     };
@@ -143,6 +155,7 @@ const renderer = (
     renderState.templateProps = prepareTemplateProps({
       templatesConfig: instantSearchInstance.templatesConfig,
       templates,
+      defaultTemplates,
     });
 
     return;
@@ -227,12 +240,7 @@ const renderer = (
       isRefinedWithMap={isRefinedWithMap()}
       hasMapMoveSinceLastRefine={hasMapMoveSinceLastRefine()}
       onRefineToggle={toggleRefineOnMapMove}
-      onRefineClick={() =>
-        refineWithMap({
-          mapInstance: renderState.mapInstance,
-          refine,
-        })
-      }
+      onRefineClick={() => refineWithMap(refine, renderState.mapInstance)}
       onClearClick={clearMapRefinement}
       templateProps={renderState.templateProps}
     />,

@@ -279,24 +279,24 @@ const geoSearch: GeoSearchWidget = widgetParams => {
     ? builtInMarker
     : customHTMLMarker;
 
-  const makeWidget = connectGeoSearch(renderer, () =>
-    render(null, containerNode)
+  const makeWidget = connectGeoSearch(
+    renderer({
+      container: containerNode,
+      cssClasses,
+      createMarker,
+      markerOptions,
+    }),
+    () => render(null, containerNode)
   );
 
   return {
     ...makeWidget({
       ...otherWidgetParams,
-      // @ts-expect-error pattern not used in other widgets, but the
-      // renderState is stored on the connectorParams for usage in the renderer
       renderState: {},
-      container: containerNode,
       googleReference,
       initialZoom,
       initialPosition,
       templates,
-      cssClasses,
-      createMarker,
-      markerOptions,
       enableRefine,
       enableClearMapRefinement,
       enableRefineControl,
