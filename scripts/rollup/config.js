@@ -1,7 +1,7 @@
-import resolve from 'rollup-plugin-node-resolve';
-import commonjs from 'rollup-plugin-commonjs';
-import babel from 'rollup-plugin-babel';
-import replace from 'rollup-plugin-replace';
+import { nodeResolve } from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
+import { babel } from '@rollup/plugin-babel';
+import replace from '@rollup/plugin-replace';
 import { uglify } from 'rollup-plugin-uglify';
 import filesize from 'rollup-plugin-filesize';
 import semver from 'semver';
@@ -24,7 +24,7 @@ const link = 'https://github.com/algolia/instantsearch.js';
 const license = `/*! InstantSearch.js ${version} | ${algolia} | ${link} */`;
 
 const plugins = [
-  resolve({
+  nodeResolve({
     browser: true,
     preferBuiltins: false,
     extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json'],
@@ -32,6 +32,8 @@ const plugins = [
   babel({
     exclude: 'node_modules/**',
     extensions: ['.js', '.ts', '.tsx'],
+    // @TODO: consider switching to "runtime"
+    babelHelpers: 'bundled',
   }),
   commonjs(),
   filesize({
@@ -60,6 +62,7 @@ const createConfiguration = ({ mode, filename }) => ({
     replace({
       __DEV__: mode === 'development',
       'process.env.NODE_ENV': JSON.stringify('production'),
+      preventAssignment: true,
     }),
     mode === 'production' &&
       uglify({
