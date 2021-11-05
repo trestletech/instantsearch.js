@@ -1,5 +1,6 @@
-import type { AlgoliaSearchHelper } from 'algoliasearch-helper';
 import algoliasearchHelper from 'algoliasearch-helper';
+import { AlgoliaSearchHelper } from 'algoliasearch-helper';
+
 import EventEmitter from 'events';
 import type { IndexWidget } from '../widgets/index/index';
 import index, { isIndexWidget } from '../widgets/index/index';
@@ -157,6 +158,7 @@ class InstantSearch<
   public _searchStalledTimer: any;
   public _isSearchStalled: boolean;
   public _initialUiState: UiState;
+  public initialResults: Record<string, any> | null;
   public _createURL: CreateURL<UiState>;
   public _searchFunction?: InstantSearchOptions['searchFunction'];
   public _mainHelperSearch?: AlgoliaSearchHelper['search'];
@@ -179,6 +181,7 @@ class InstantSearch<
       searchClient = null,
       insightsClient = null,
       onStateChange = null,
+      initialResults = null,
     } = options;
 
     if (indexName === null) {
@@ -253,6 +256,26 @@ See ${createDocumentationLink({
 
     this._createURL = defaultCreateURL;
     this._initialUiState = initialUiState;
+    this.initialResults = initialResults;
+
+    if (initialResults) {
+      this.initialResults = Object.keys(initialResults).reduce<
+        Record<string, any>
+      >((acc, key) => {
+        const indexInitialResults = initialResults[key];
+
+        if (indexInitialResults) {
+          acc[key] = new algoliasearchHelper.SearchResults(
+            new algoliasearchHelper.SearchParameters(
+              indexInitialResults._state
+            ),
+            indexInitialResults._rawResults
+          );
+        }
+
+        return acc;
+      }, {});
+    }
 
     if (searchFunction) {
       this._searchFunction = searchFunction;

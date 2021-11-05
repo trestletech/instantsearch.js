@@ -472,6 +472,15 @@ const index = (widgetParams: IndexWidgetParams): IndexWidget => {
         mergeSearchParameters(...resolveSearchParameters(this))
       );
 
+      const indexInitialResults =
+        instantSearchInstance.initialResults?.[this.getIndexId()];
+
+      if (indexInitialResults) {
+        derivedHelper.lastResults = indexInitialResults;
+        helper.lastResults = indexInitialResults;
+        helper.state = indexInitialResults._state;
+      }
+
       // Subscribe to the Helper state changes for the page before widgets
       // are initialized. This behavior mimics the original one of the Helper.
       // It makes sense to replicate it at the `init` step. We have another
@@ -590,6 +599,10 @@ const index = (widgetParams: IndexWidgetParams): IndexWidget => {
           instantSearchInstance.onInternalStateChange();
         }
       });
+
+      if (indexInitialResults) {
+        this.render({ instantSearchInstance });
+      }
     },
 
     render({ instantSearchInstance }: IndexRenderOptions) {
